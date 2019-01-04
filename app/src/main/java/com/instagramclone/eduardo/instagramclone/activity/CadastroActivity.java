@@ -1,5 +1,7 @@
 package com.instagramclone.eduardo.instagramclone.activity;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,7 +10,15 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.instagramclone.eduardo.instagramclone.R;
+import com.instagramclone.eduardo.instagramclone.helper.ConfiguracaoFirebase;
 import com.instagramclone.eduardo.instagramclone.model.Usuario;
 
 public class CadastroActivity extends AppCompatActivity {
@@ -17,6 +27,8 @@ public class CadastroActivity extends AppCompatActivity {
     private ProgressBar progressBar;
 
     private Usuario usuario;
+
+    private FirebaseAuth autenticacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +55,7 @@ public class CadastroActivity extends AppCompatActivity {
                             usuario.setEmail(textoEmail);
                             usuario.setSenha(textoSenha);
 
-                            cadastrarUsuário(usuario);
+                            cadastrar(usuario);
                         }else{
                             Toast.makeText(CadastroActivity.this, "Preencha a senha", Toast.LENGTH_SHORT).show();
                         }
@@ -57,8 +69,44 @@ public class CadastroActivity extends AppCompatActivity {
         });
     }
 
-    public void cadastrarUsuário(Usuario usuario){
+    //Método responsável por cadastrar usuário com e-mail e senha e fazer validações
+    public void cadastrar(Usuario usuario){
+        autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+        autenticacao.createUserWithEmailAndPassword(
+                usuario.getEmail(),
+                usuario.getSenha()
+        ).addOnCompleteListener(
+                this,
+                new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()){
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(CadastroActivity.this, "Cadastro feito com sucesso", Toast.LENGTH_SHORT).show();
 
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            finish();
+                        }else{
+                            progressBar.setVisibility(View.GONE);
+
+                            String erroExcecao = "";
+                            try {
+                                throw task.getException();
+                            }catch (FirebaseAuthWeakPasswordException e){
+                                erroExcecao = "Digite uma senha mais forte";
+                            }catch (FirebaseAuthInvalidCredentialsException e){
+                                erroExcecao = "Por favor, digite um e-mail válido";
+                            }catch (FirebaseAuthUserCollisionException e){
+                                erroExcecao = "Já existe uma conta cadastrada neste e-mail";
+                            }catch (Exception e){
+                                erroExcecao = "Erro ao cadastrar usuário: " + e.getMessage();
+                                e.printStackTrace();
+                            }
+                            Toast.makeText(CadastroActivity.this, "Erro: " + erroExcecao, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
     }
 
     private void inicializarComponentes(){
