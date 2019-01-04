@@ -23,7 +23,8 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="103" />
+                                                <entry key="scalingPercent" value="107" />
+                                                <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -33,7 +34,9 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="foregroundImage" value="C:\Users\Eduardo\Documents\Universidade\Estudos\Android\Curso Android\App - Instagram\icone.jpg" />
+                                      <entry key="backgroundAssetType" value="COLOR" />
+                                      <entry key="backgroundColor" value="d1c5b7" />
+                                      <entry key="foregroundImage" value="C:\Users\Eduardo\Documents\Universidade\Estudos\Android\Curso Android\App - Instagram\icone.png" />
                                     </map>
                                   </option>
                                 </PersistentState>
