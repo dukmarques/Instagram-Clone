@@ -38,7 +38,7 @@ public class CadastroActivity extends AppCompatActivity {
         inicializarComponentes();
 
         //Cadastrar Usuário
-        progressBar.setVisibility(View.GONE);
+        progressBar.setVisibility(View.INVISIBLE);
         botaoCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,7 +71,7 @@ public class CadastroActivity extends AppCompatActivity {
     //Método responsável por cadastrar usuário com e-mail e senha e fazer validações
     public void cadastrar(Usuario usuario){
         progressBar.setVisibility(View.VISIBLE);
-        
+
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
         autenticacao.createUserWithEmailAndPassword(
                 usuario.getEmail(),
@@ -82,13 +82,13 @@ public class CadastroActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
-                            progressBar.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.INVISIBLE);
                             Toast.makeText(CadastroActivity.this, "Cadastro feito com sucesso", Toast.LENGTH_SHORT).show();
 
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             finish();
                         }else{
-                            progressBar.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.INVISIBLE);
 
                             String erroExcecao = "";
                             try {
@@ -103,7 +103,7 @@ public class CadastroActivity extends AppCompatActivity {
                                 erroExcecao = "Erro ao cadastrar usuário: " + e.getMessage();
                                 e.printStackTrace();
                             }
-                            Toast.makeText(CadastroActivity.this, "Erro: " + erroExcecao, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CadastroActivity.this, erroExcecao, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -116,5 +116,7 @@ public class CadastroActivity extends AppCompatActivity {
         campoSenha = findViewById(R.id.editCadastroSenha);
         botaoCadastrar = findViewById(R.id.buttonCadastrar);
         progressBar = findViewById(R.id.progressCadastro);
+
+        campoNome.requestFocus();
     }
 }
