@@ -36,6 +36,9 @@ dependencies {
 
     //Dependências para o bottom navigationEx
     implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.2'
+
+    //Dependência circle image view
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
