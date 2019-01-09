@@ -33,6 +33,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.0.1'
     implementation 'com.google.firebase:firebase-storage:16.0.1'
     implementation 'com.google.firebase:firebase-auth:16.0.1'
+    implementation 'com.firebaseui:firebase-ui-storage:3.3.1'
 
     //Dependências para o bottom navigationEx
     implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.2'
