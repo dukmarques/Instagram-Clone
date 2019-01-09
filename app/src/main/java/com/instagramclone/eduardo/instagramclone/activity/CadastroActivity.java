@@ -69,7 +69,7 @@ public class CadastroActivity extends AppCompatActivity {
     }
 
     //Método responsável por cadastrar usuário com e-mail e senha e fazer validações
-    public void cadastrar(Usuario usuario){
+    public void cadastrar(final Usuario usuario){
         progressBar.setVisibility(View.VISIBLE);
 
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
@@ -82,11 +82,22 @@ public class CadastroActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
-                            progressBar.setVisibility(View.INVISIBLE);
-                            Toast.makeText(CadastroActivity.this, "Cadastro feito com sucesso", Toast.LENGTH_SHORT).show();
+                            try{
+                                progressBar.setVisibility(View.INVISIBLE);
 
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                            finish();
+                                //Salvar dados no firebase
+                                String idUsuario = task.getResult().getUser().getUid();
+                                usuario.setId(idUsuario);
+                                usuario.salvar();
+
+                                Toast.makeText(CadastroActivity.this, "Cadastro feito com sucesso", Toast.LENGTH_SHORT).show();
+
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                finish();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+
                         }else{
                             progressBar.setVisibility(View.INVISIBLE);
 
