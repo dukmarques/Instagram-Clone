@@ -4,6 +4,7 @@ package com.instagramclone.eduardo.instagramclone.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -17,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramclone.eduardo.instagramclone.R;
+import com.instagramclone.eduardo.instagramclone.adapter.AdapterPesquisa;
 import com.instagramclone.eduardo.instagramclone.helper.ConfiguracaoFirebase;
 import com.instagramclone.eduardo.instagramclone.model.Usuario;
 
@@ -32,6 +34,7 @@ public class PesquisaFragment extends Fragment {
 
     private List<Usuario> listaUsuarios;
     private DatabaseReference usuariosRef;
+    private AdapterPesquisa adapterPesquisa;
 
     public PesquisaFragment() {
         // Required empty public constructor
@@ -49,6 +52,13 @@ public class PesquisaFragment extends Fragment {
         //Configurações iniciais
         listaUsuarios = new ArrayList<>();
         usuariosRef = ConfiguracaoFirebase.getFirebase().child("usuarios");
+
+        //Configura recyclerView
+        recyclerPesquisa.setHasFixedSize(true);
+        recyclerPesquisa.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        adapterPesquisa = new AdapterPesquisa(listaUsuarios, getActivity());
+        recyclerPesquisa.setAdapter(adapterPesquisa);
 
         //Configura searchview
         searchViewPesquisa.setQueryHint("Buscar Usuários");
@@ -74,7 +84,7 @@ public class PesquisaFragment extends Fragment {
         listaUsuarios.clear();
 
         //Pesquisa usuários cado tenha texto na pesquisa
-        if (texto.length() > 0){
+        if (texto.length() >= 2){
             Query query = usuariosRef.orderByChild("nome")
                     .startAt(texto)
                     .endAt(texto + "\uf8ff");
@@ -82,12 +92,13 @@ public class PesquisaFragment extends Fragment {
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    //Limpar lista
+                    listaUsuarios.clear();
+
                     for (DataSnapshot ds : dataSnapshot.getChildren()){
                         listaUsuarios.add(ds.getValue(Usuario.class));
                     }
-
-                    int total = listaUsuarios.size();
-                    Log.i("totalUsuarios", "total: " + total);
+                    adapterPesquisa.notifyDataSetChanged();
                 }
 
                 @Override
