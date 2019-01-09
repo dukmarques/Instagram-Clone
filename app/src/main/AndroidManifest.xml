@@ -22,11 +22,10 @@
         <activity
             android:name=".activity.CadastroActivity"
             android:theme="@style/AppThemeLogin" />
-
-        <activity android:name=".activity.EditarPerfilActivity"
-            android:parentActivityName=".activity.MainActivity">
-
-        </activity>
+        <activity
+            android:name=".activity.EditarPerfilActivity"
+            android:parentActivityName=".activity.MainActivity"></activity>
+        <activity android:name=".activity.PerfilAmigoActivity"></activity>
     </application>
 
 </manifest>
