@@ -61,7 +61,8 @@
             android:id="@+id/buttonSalvarAlteracoes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Salvar Alterações" />
+            android:text="Salvar Alterações"
+            android:background="@drawable/background_botao_perfil"/>
 
     </LinearLayout>
 
