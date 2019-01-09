@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramclone.eduardo.instagramclone.R;
 import com.instagramclone.eduardo.instagramclone.helper.ConfiguracaoFirebase;
+import com.instagramclone.eduardo.instagramclone.helper.UsuarioFirebase;
 import com.instagramclone.eduardo.instagramclone.model.Usuario;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -25,9 +26,13 @@ public class PerfilAmigoActivity extends AppCompatActivity {
     private CircleImageView imagePerfil;
     private TextView textPublicacoes, textSeguidores, textSeguindo;
 
+    private DatabaseReference firebaseRef;
     private DatabaseReference usuariosRef;
     private DatabaseReference usuarioAmigoRef;
+    private DatabaseReference seguidoresRef;
     private ValueEventListener valueEventListenerPerfilAmigo;
+
+    private String idUsuarioLogado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +40,10 @@ public class PerfilAmigoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_perfil_amigo);
 
         //Configurações iniciais
-        usuariosRef = ConfiguracaoFirebase.getFirebase().child("usuarios");
+        firebaseRef = ConfiguracaoFirebase.getFirebase();
+        usuariosRef = firebaseRef.child("usuarios");
+        seguidoresRef = firebaseRef.child("seguidores");
+        idUsuarioLogado = UsuarioFirebase.getIdentificadorUsuario();
 
         //Inicializar Componentes
         inicializarComponentes();
@@ -64,6 +72,39 @@ public class PerfilAmigoActivity extends AppCompatActivity {
                         .load(url)
                         .into(imagePerfil);
             }
+        }
+        verificaSegueUsuarioAmigo();
+    }
+
+    private void verificaSegueUsuarioAmigo(){
+        DatabaseReference seguidorRef = seguidoresRef
+                .child(idUsuarioLogado)
+                .child(usuarioSelecionado.getId());
+
+        seguidorRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    //Já está seguindo o usuário
+                    habilitarBotaoSeguir(true);
+                }else{
+                    //Ainda não está seguindo o usuário
+                    habilitarBotaoSeguir(false);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void habilitarBotaoSeguir(boolean segueUsuario){
+        if (segueUsuario){
+            buttonAcaoPerfil.setText("Seguindo");
+        }else{
+            buttonAcaoPerfil.setText("Seguir");
         }
     }
 
