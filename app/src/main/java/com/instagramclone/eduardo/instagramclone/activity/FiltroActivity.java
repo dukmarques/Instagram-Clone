@@ -13,6 +13,11 @@ import android.widget.ImageView;
 import com.instagramclone.eduardo.instagramclone.R;
 import com.zomato.photofilters.FilterPack;
 import com.zomato.photofilters.imageprocessors.Filter;
+import com.zomato.photofilters.utils.ThumbnailItem;
+import com.zomato.photofilters.utils.ThumbnailsManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FiltroActivity extends AppCompatActivity {
     static
@@ -23,11 +28,15 @@ public class FiltroActivity extends AppCompatActivity {
     private ImageView imageFotoEscolhida;
     private Bitmap imagem;
     private Bitmap imagemFiltro;
+    private List<ThumbnailItem> listaFiltros;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filtro);
+
+        //Configurações iniciais
+        listaFiltros = new ArrayList<>();
 
         //Inicializar Componentes
         imageFotoEscolhida = findViewById(R.id.imageFotoEscolhida);
@@ -47,10 +56,39 @@ public class FiltroActivity extends AppCompatActivity {
             imagem = BitmapFactory.decodeByteArray(dadosImagem, 0, dadosImagem.length);
             imageFotoEscolhida.setImageBitmap(imagem);
 
+            //Recuperar filtros
+            recuperarFiltros();
+            /*
             imagemFiltro = imagem.copy(imagem.getConfig(), true);
             Filter filter = FilterPack.getAmazonFilter(getApplicationContext());
             imageFotoEscolhida.setImageBitmap(filter.processFilter(imagemFiltro));
+            */
         }
+    }
+
+    private void recuperarFiltros(){
+        //Limpar itens
+        listaFiltros.clear();
+
+        //Configurar filtro normal
+        ThumbnailItem item = new ThumbnailItem();
+        item.image = imagem;
+        item.filterName = "Normal";
+        ThumbnailsManager.addThumb(item);
+
+        //Listar todos os filtros
+        List<Filter> filtros = FilterPack.getFilterPack(getApplicationContext());
+
+        for (Filter filtro : filtros){
+            ThumbnailItem itemFiltro = new ThumbnailItem();
+            itemFiltro.image = imagem;
+            itemFiltro.filter = filtro;
+            itemFiltro.filterName = filtro.getName();
+
+            ThumbnailsManager.addThumb(itemFiltro);
+        }
+
+        listaFiltros.addAll(ThumbnailsManager.processThumbs(getApplicationContext()));
     }
 
     @Override
