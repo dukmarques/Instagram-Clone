@@ -98,14 +98,22 @@
             app:icon_size="30dp"
             app:icon_type="heart"
             app:like_drawable="@drawable/ic_heart_cheio_black_24dp"
-            app:unlike_drawable="@drawable/ic_heart_vazio_black_24dp"/>
+            app:unlike_drawable="@drawable/coracao"/>
 
         <ImageView
             android:id="@+id/imageComentarioFeed"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginLeft="16dp"
-            app:srcCompat="@drawable/comentario" />
+            app:srcCompat="@drawable/comentario3" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="right"
+            android:layout_marginLeft="240dp"
+            app:srcCompat="@drawable/salvar" />
 
     </LinearLayout>
 
