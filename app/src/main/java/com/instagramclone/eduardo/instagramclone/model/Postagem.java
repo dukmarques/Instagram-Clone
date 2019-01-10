@@ -3,7 +3,9 @@ package com.instagramclone.eduardo.instagramclone.model;
 import com.google.firebase.database.DatabaseReference;
 import com.instagramclone.eduardo.instagramclone.helper.ConfiguracaoFirebase;
 
-public class Postagem {
+import java.io.Serializable;
+
+public class Postagem implements Serializable {
     private String id;
     private String idUsuario;
     private String descricao;

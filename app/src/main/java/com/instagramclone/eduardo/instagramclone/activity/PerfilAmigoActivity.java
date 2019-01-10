@@ -1,5 +1,6 @@
 package com.instagramclone.eduardo.instagramclone.activity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -51,6 +53,7 @@ public class PerfilAmigoActivity extends AppCompatActivity {
     private ValueEventListener valueEventListenerPerfilAmigo;
 
     private String idUsuarioLogado;
+    private List<Postagem> postagens;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +104,20 @@ public class PerfilAmigoActivity extends AppCompatActivity {
 
         //Carregar as fotos das postagens do usuário visitado
         carregarFotosPostagem();
+
+        //Abre a foto clicada
+        gridViewPerfil.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Postagem postagem = postagens.get(position);
+                Intent i = new Intent(getApplicationContext(), VisualizarPostagemActivity.class);
+
+                i.putExtra("postagem", postagem);
+                i.putExtra("usuario", usuarioSelecionado);
+
+                startActivity(i);
+            }
+        });
     }
 
     /**
@@ -119,19 +136,21 @@ public class PerfilAmigoActivity extends AppCompatActivity {
     }
 
     public void carregarFotosPostagem(){
-        //Configurar o tamanho do grid
-        int tamanhoGrid = getResources().getDisplayMetrics().widthPixels;
-        int tamanhoImagem = tamanhoGrid / 3;
-        gridViewPerfil.setColumnWidth(tamanhoImagem);
-
         //Recupera as fotos postadas pelo usuário
+        postagens = new ArrayList<>();
+
         postagensUsuarioRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<String> urlFotos = new ArrayList<>();
+                //Configurar o tamanho do grid
+                int tamanhoGrid = getResources().getDisplayMetrics().widthPixels;
+                int tamanhoImagem = tamanhoGrid / 3;
+                gridViewPerfil.setColumnWidth(tamanhoImagem);
 
+                List<String> urlFotos = new ArrayList<>();
                 for (DataSnapshot ds : dataSnapshot.getChildren()){
                     Postagem postagem = ds.getValue(Postagem.class);
+                    postagens.add(postagem);
                     urlFotos.add(postagem.getCaminhoFoto());
                 }
 
