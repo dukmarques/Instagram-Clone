@@ -2,11 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.instagramclone.eduardo.instagramclone">
 
-    <uses-feature android:name="android.hardware.camera2"
-        android:required="true"/>
-    
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature
+        android:name="android.hardware.camera2"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -30,8 +31,9 @@
             android:theme="@style/AppThemeLogin" />
         <activity
             android:name=".activity.EditarPerfilActivity"
-            android:parentActivityName=".activity.MainActivity"></activity>
-        <activity android:name=".activity.PerfilAmigoActivity"></activity>
+            android:parentActivityName=".activity.MainActivity" />
+        <activity android:name=".activity.PerfilAmigoActivity" />
+        <activity android:name=".activity.FiltroActivity"></activity>
     </application>
 
 </manifest>

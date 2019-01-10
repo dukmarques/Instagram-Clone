@@ -3,6 +3,8 @@ package com.instagramclone.eduardo.instagramclone.fragment;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -12,7 +14,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.instagramclone.eduardo.instagramclone.R;
+import com.instagramclone.eduardo.instagramclone.activity.FiltroActivity;
 import com.instagramclone.eduardo.instagramclone.helper.Permissao;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,4 +73,40 @@ public class PostagemFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == getActivity().RESULT_OK){
+            Bitmap imagem = null;
+
+            try{
+                //Validar tipo de seleção da imagem
+                switch (requestCode){
+                    case SELECAO_CAMERA:
+                        imagem = (Bitmap) data.getExtras().get("data");
+                        break;
+                    case SELECAO_GALERIA:
+                        Uri localImagemSelecionada = data.getData();
+                        imagem = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), localImagemSelecionada);
+                        break;
+                }
+
+                //Validar imagem selecionada
+                if (imagem != null){
+                    //Converte imagem em byte array
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    imagem.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+                    byte[] dadosImagem = baos.toByteArray();
+
+                    //Envia imagem escolhida para aplicação de filtro
+                    Intent i = new Intent(getActivity(), FiltroActivity.class);
+                    i.putExtra("fotoEscolhida", dadosImagem);
+                    startActivity(i);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
 }
