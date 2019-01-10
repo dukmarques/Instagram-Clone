@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -16,6 +17,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramclone.eduardo.instagramclone.R;
+import com.instagramclone.eduardo.instagramclone.adapter.AdapterGrid;
 import com.instagramclone.eduardo.instagramclone.helper.ConfiguracaoFirebase;
 import com.instagramclone.eduardo.instagramclone.helper.UsuarioFirebase;
 import com.instagramclone.eduardo.instagramclone.model.Postagem;
@@ -33,6 +35,8 @@ public class PerfilAmigoActivity extends AppCompatActivity {
     private Button buttonAcaoPerfil;
     private CircleImageView imagePerfil;
     private TextView textPublicacoes, textSeguidores, textSeguindo;
+    private GridView gridViewPerfil;
+    private AdapterGrid adapterGrid;
 
     private DatabaseReference firebaseRef;
     private DatabaseReference usuariosRef;
@@ -107,6 +111,10 @@ public class PerfilAmigoActivity extends AppCompatActivity {
 
                 int qtdPostagem = urlFotos.size();
                 textPublicacoes.setText(String.valueOf(qtdPostagem));
+
+                //Configurar adapter
+                adapterGrid = new AdapterGrid(getApplicationContext(),R.layout.grid_postagem, urlFotos);
+                gridViewPerfil.setAdapter(adapterGrid);
             }
 
             @Override
@@ -253,6 +261,7 @@ public class PerfilAmigoActivity extends AppCompatActivity {
 
     private void inicializarComponentes(){
         buttonAcaoPerfil = findViewById(R.id.buttonAcaoPerfil);
+        gridViewPerfil = findViewById(R.id.gridViewPerfil);
         buttonAcaoPerfil.setText("Carregando");
         imagePerfil = findViewById(R.id.imagePerfil);
         textPublicacoes = findViewById(R.id.textPublicacoes);
