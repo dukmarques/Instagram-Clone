@@ -17,13 +17,13 @@
         <ImageView
             android:id="@+id/imageFotoEscolhida"
             android:layout_width="match_parent"
-            android:layout_height="420dp"
+            android:layout_height="380dp"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/avatar" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp">
 

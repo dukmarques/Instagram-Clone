@@ -4,13 +4,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 
 import com.instagramclone.eduardo.instagramclone.R;
+import com.instagramclone.eduardo.instagramclone.adapter.AdapterMiniaturas;
+import com.instagramclone.eduardo.instagramclone.helper.RecyclerItemClickListener;
 import com.zomato.photofilters.FilterPack;
 import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.utils.ThumbnailItem;
@@ -30,6 +36,9 @@ public class FiltroActivity extends AppCompatActivity {
     private Bitmap imagemFiltro;
     private List<ThumbnailItem> listaFiltros;
 
+    private RecyclerView recyclerFiltros;
+    private AdapterMiniaturas adapterMiniaturas;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +49,7 @@ public class FiltroActivity extends AppCompatActivity {
 
         //Inicializar Componentes
         imageFotoEscolhida = findViewById(R.id.imageFotoEscolhida);
+        recyclerFiltros = findViewById(R.id.recyclerFiltros);
 
         //Configurar toolbar
         Toolbar toolbar = findViewById(R.id.toolbarPrincipal);
@@ -56,18 +66,48 @@ public class FiltroActivity extends AppCompatActivity {
             imagem = BitmapFactory.decodeByteArray(dadosImagem, 0, dadosImagem.length);
             imageFotoEscolhida.setImageBitmap(imagem);
 
+            //Configura recyclerView de filtros
+            adapterMiniaturas = new AdapterMiniaturas(listaFiltros, getApplicationContext());
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+            recyclerFiltros.setLayoutManager(layoutManager);
+            recyclerFiltros.setAdapter(adapterMiniaturas);
+
+            //Adiciona evento de clique no recyclerView
+            recyclerFiltros.addOnItemTouchListener(
+                    new RecyclerItemClickListener(
+                            getApplicationContext(),
+                            recyclerFiltros,
+                            new RecyclerItemClickListener.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(View view, int position) {
+                                    ThumbnailItem item = listaFiltros.get(position);
+
+                                    imagemFiltro = imagem.copy(imagem.getConfig(), true);
+                                    Filter filtro = item.filter;
+                                    imageFotoEscolhida.setImageBitmap(filtro.processFilter(imagemFiltro));
+                                }
+
+                                @Override
+                                public void onLongItemClick(View view, int position) {
+
+                                }
+
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                                }
+                            }
+                    )
+            );
+
             //Recuperar filtros
             recuperarFiltros();
-            /*
-            imagemFiltro = imagem.copy(imagem.getConfig(), true);
-            Filter filter = FilterPack.getAmazonFilter(getApplicationContext());
-            imageFotoEscolhida.setImageBitmap(filter.processFilter(imagemFiltro));
-            */
         }
     }
 
     private void recuperarFiltros(){
         //Limpar itens
+        ThumbnailsManager.clearThumbs();
         listaFiltros.clear();
 
         //Configurar filtro normal
@@ -89,6 +129,7 @@ public class FiltroActivity extends AppCompatActivity {
         }
 
         listaFiltros.addAll(ThumbnailsManager.processThumbs(getApplicationContext()));
+        adapterMiniaturas.notifyDataSetChanged();
     }
 
     @Override
