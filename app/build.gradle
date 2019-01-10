@@ -46,6 +46,9 @@ dependencies {
 
     //Dependência do CardView
     implementation 'com.android.support:cardview-v7:28.0.0'
+
+    //Dependência da Lib Universal Image Loader
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 }
 
 apply plugin: 'com.google.gms.google-services'

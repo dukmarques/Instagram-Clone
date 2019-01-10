@@ -22,6 +22,10 @@ import com.instagramclone.eduardo.instagramclone.helper.ConfiguracaoFirebase;
 import com.instagramclone.eduardo.instagramclone.helper.UsuarioFirebase;
 import com.instagramclone.eduardo.instagramclone.model.Postagem;
 import com.instagramclone.eduardo.instagramclone.model.Usuario;
+import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,12 +96,34 @@ public class PerfilAmigoActivity extends AppCompatActivity {
                         .into(imagePerfil);
             }
         }
+        //Inicializar Image Loader
+        incializarImageLoader();
 
         //Carregar as fotos das postagens do usuário visitado
         carregarFotosPostagem();
     }
 
+    /**
+     * Instancia a UniversalImageLoader
+     */
+    public void incializarImageLoader(){
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration
+                .Builder(this)
+                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
+                .memoryCacheSize(2 * 1024 * 1024)
+                .diskCacheSize(50 * 1024 * 1024)
+                .diskCacheFileCount(100)
+                .diskCacheFileNameGenerator(new HashCodeFileNameGenerator())
+                .build();
+        ImageLoader.getInstance().init(config);
+    }
+
     public void carregarFotosPostagem(){
+        //Configurar o tamanho do grid
+        int tamanhoGrid = getResources().getDisplayMetrics().widthPixels;
+        int tamanhoImagem = tamanhoGrid / 3;
+        gridViewPerfil.setColumnWidth(tamanhoImagem);
+
         //Recupera as fotos postadas pelo usuário
         postagensUsuarioRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
