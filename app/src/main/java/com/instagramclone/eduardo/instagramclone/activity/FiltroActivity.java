@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
@@ -45,6 +46,7 @@ public class FiltroActivity extends AppCompatActivity {
     }
 
     private ImageView imageFotoEscolhida;
+    private ProgressBar progressBarFiltro;
     private Bitmap imagem;
     private Bitmap imagemFiltro;
     private TextInputEditText textDescricaoFiltro;
@@ -62,6 +64,8 @@ public class FiltroActivity extends AppCompatActivity {
         //Configurações iniciais
         listaFiltros = new ArrayList<>();
         idUsuarioLogado = UsuarioFirebase.getIdentificadorUsuario();
+        progressBarFiltro = findViewById(R.id.progressBarFiltro);
+        progressBarFiltro.setVisibility(View.GONE);
 
         //Inicializar Componentes
         imageFotoEscolhida = findViewById(R.id.imageFotoEscolhida);
@@ -151,6 +155,8 @@ public class FiltroActivity extends AppCompatActivity {
     }
 
     private void publicarPostagem(){
+        progressBarFiltro.setVisibility(View.VISIBLE);
+
         final Postagem postagem = new Postagem();
         postagem.setIdUsuario(idUsuarioLogado);
         postagem.setDescricao(textDescricaoFiltro.getText().toString());
@@ -188,6 +194,7 @@ public class FiltroActivity extends AppCompatActivity {
 
                     //Salvar postagem
                     if (postagem.salvar()){
+                        progressBarFiltro.setVisibility(View.GONE);
                         Toast.makeText(FiltroActivity.this, "Sucesso ao publicar a foto", Toast.LENGTH_SHORT).show();
                         finish();
                     }
