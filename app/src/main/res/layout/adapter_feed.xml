@@ -8,7 +8,7 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imagePerfilPostagem"
-        android:layout_width="30dp"
+        android:layout_width="40dp"
         android:layout_height="30dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -27,7 +27,7 @@
         android:layout_marginRight="16dp"
         android:text="Nome Usuário"
         android:textColor="@android:color/black"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imagePerfilPostagem"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,7 +37,7 @@
     <ImageView
         android:id="@+id/imagePostagemSelecionada"
         android:layout_width="0dp"
-        android:layout_height="370dp"
+        android:layout_height="350dp"
         android:layout_marginTop="8dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
@@ -101,7 +101,7 @@
             app:unlike_drawable="@drawable/ic_heart_vazio_black_24dp"/>
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/imageComentarioFeed"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginLeft="16dp"
