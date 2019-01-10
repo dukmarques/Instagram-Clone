@@ -41,6 +41,10 @@ dependencies {
     //Dependência circle image view
     implementation 'de.hdodenhof:circleimageview:3.0.0'
 
+    //Dependências AndroidPhotoFilter
+    implementation 'info.androidhive:imagefilters:1.0.7'
+
+    //Dependência do CardView
     implementation 'com.android.support:cardview-v7:28.0.0'
 }
 
