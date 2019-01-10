@@ -1,5 +1,6 @@
 package com.instagramclone.eduardo.instagramclone.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -27,6 +28,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.instagramclone.eduardo.instagramclone.R;
 import com.instagramclone.eduardo.instagramclone.helper.ConfiguracaoFirebase;
+import com.instagramclone.eduardo.instagramclone.helper.Permissao;
 import com.instagramclone.eduardo.instagramclone.helper.UsuarioFirebase;
 import com.instagramclone.eduardo.instagramclone.model.Usuario;
 
@@ -44,10 +46,17 @@ public class EditarPerfilActivity extends AppCompatActivity {
     private StorageReference storageRef;
     private String identificadorUsuario;
 
+    private String[] permissoesNecessarias = new String[]{
+            Manifest.permission.READ_EXTERNAL_STORAGE
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editar_perfil);
+
+        //Validar permissões
+        Permissao.validarPermissoes(permissoesNecessarias, this, 1);
 
         //Configurações iniciais
         usuarioLogado = UsuarioFirebase.getDadosUsuarioLogado();
