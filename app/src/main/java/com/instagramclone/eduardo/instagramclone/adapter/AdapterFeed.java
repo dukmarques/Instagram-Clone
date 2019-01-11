@@ -11,9 +11,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.instagramclone.eduardo.instagramclone.R;
+import com.instagramclone.eduardo.instagramclone.helper.ConfiguracaoFirebase;
+import com.instagramclone.eduardo.instagramclone.helper.UsuarioFirebase;
 import com.instagramclone.eduardo.instagramclone.model.Feed;
+import com.instagramclone.eduardo.instagramclone.model.PostagemCurtida;
+import com.instagramclone.eduardo.instagramclone.model.Usuario;
 import com.like.LikeButton;
+import com.like.OnLikeListener;
 
 import java.util.List;
 
@@ -36,8 +45,9 @@ public class AdapterFeed extends RecyclerView.Adapter<AdapterFeed.MyViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
-        Feed feed = listaFeed.get(i);
+    public void onBindViewHolder(@NonNull final MyViewHolder myViewHolder, int i) {
+        final Feed feed = listaFeed.get(i);
+        final Usuario usuarioLogado = UsuarioFirebase.getDadosUsuarioLogado();
 
         //Carrega dados do feed
         Uri uriFotoUsuario = Uri.parse(feed.getFotoUsuario());
@@ -48,6 +58,45 @@ public class AdapterFeed extends RecyclerView.Adapter<AdapterFeed.MyViewHolder> 
 
         myViewHolder.descricao.setText(feed.getDescricao());
         myViewHolder.nome.setText(feed.getNomeUsuario());
+
+        //Recuperar dados da postagem curtida
+        DatabaseReference curtidasRef = ConfiguracaoFirebase.getFirebase()
+                .child("postagens-curtidas")
+                .child(feed.getId());
+        curtidasRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int qtdCurtidas = 0;
+                if (dataSnapshot.hasChild("qtdCurtidas")){
+                    PostagemCurtida postagemCurtida = dataSnapshot.getValue(PostagemCurtida.class);
+                    qtdCurtidas = postagemCurtida.getQtdCurtidas();
+                }
+
+                //Monta objeto postagem curitda
+                final PostagemCurtida curtida = new PostagemCurtida();
+                curtida.setFeed(feed);
+                curtida.setUsuario(usuarioLogado);
+                curtida.setQtdCurtidas(qtdCurtidas);
+
+                //Adiciona eventos para curtir uma foto
+                myViewHolder.likeButton.setOnLikeListener(new OnLikeListener() {
+                    @Override
+                    public void liked(LikeButton likeButton) {
+                        curtida.salvar();
+                    }
+
+                    @Override
+                    public void unLiked(LikeButton likeButton) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
