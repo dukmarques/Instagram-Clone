@@ -1,6 +1,7 @@
 package com.instagramclone.eduardo.instagramclone.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.instagramclone.eduardo.instagramclone.R;
+import com.instagramclone.eduardo.instagramclone.activity.ComentariosActivity;
 import com.instagramclone.eduardo.instagramclone.helper.ConfiguracaoFirebase;
 import com.instagramclone.eduardo.instagramclone.helper.UsuarioFirebase;
 import com.instagramclone.eduardo.instagramclone.model.Feed;
@@ -58,6 +60,16 @@ public class AdapterFeed extends RecyclerView.Adapter<AdapterFeed.MyViewHolder> 
 
         myViewHolder.descricao.setText(feed.getDescricao());
         myViewHolder.nome.setText(feed.getNomeUsuario());
+
+        //Adicona evento de clique nos comentários
+        myViewHolder.visualizarComentario.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context, ComentariosActivity.class);
+                i.putExtra("idPostagem", feed.getId());
+                context.startActivity(i);
+            }
+        });
 
         //Recuperar dados da postagem curtida
         DatabaseReference curtidasRef = ConfiguracaoFirebase.getFirebase()
