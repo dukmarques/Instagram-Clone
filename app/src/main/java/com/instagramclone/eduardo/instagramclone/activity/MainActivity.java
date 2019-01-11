@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Configurar toolbar
         Toolbar toolbar = findViewById(R.id.toolbarPrincipal);
-        toolbar.setTitle("Instagram");
-        //toolbar.setLogo(R.drawable.logo_nome);
+        toolbar.setTitle("");
+        toolbar.setLogo(R.drawable.instagram_logo);
         setSupportActionBar(toolbar);
 
         //Configurações de objetos
