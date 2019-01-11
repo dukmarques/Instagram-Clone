@@ -79,15 +79,6 @@ public class PerfilFragment extends Fragment {
         //Configurações dos componentes
         inicializarComponentes(view);
 
-        //Recuperar foto do usuário
-        String caminhoFoto = usuarioLogado.getCaminhoFoto();
-        if (caminhoFoto != null){
-            Uri url = Uri.parse(caminhoFoto);
-            Glide.with(getActivity())
-                    .load(url)
-                    .into(imagePerfil);
-        }
-
         //Abre edição do perfil
         buttonAcaoPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,9 +113,6 @@ public class PerfilFragment extends Fragment {
                     Postagem postagem = ds.getValue(Postagem.class);
                     urlFotos.add(postagem.getCaminhoFoto());
                 }
-
-                int qtdPostagem = urlFotos.size();
-                textPublicacoes.setText(String.valueOf(qtdPostagem));
 
                 //Configurar adapter
                 adapterGrid = new AdapterGrid(getActivity(), R.layout.grid_postagem, urlFotos);
@@ -171,12 +159,12 @@ public class PerfilFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Usuario usuario = dataSnapshot.getValue(Usuario.class);
 
-                        //String postagens = String.valueOf(usuario.getPostagens());
+                        String postagens = String.valueOf(usuario.getPostagens());
                         String seguindo = String.valueOf(usuario.getSeguindo());
                         String seguidores = String.valueOf(usuario.getSeguidores());
 
                         //Configura valores recuperados
-                        //textPublicacoes.setText(postagens);
+                        textPublicacoes.setText(postagens);
                         textSeguidores.setText(seguidores);
                         textSeguindo.setText(seguindo);
                     }
@@ -189,12 +177,28 @@ public class PerfilFragment extends Fragment {
         );
     }
 
+    private void recuperarFotoUsuario(){
+        usuarioLogado = UsuarioFirebase.getDadosUsuarioLogado();
+
+        //Recuperar foto do usuário
+        String caminhoFoto = usuarioLogado.getCaminhoFoto();
+        if (caminhoFoto != null){
+            Uri url = Uri.parse(caminhoFoto);
+            Glide.with(getActivity())
+                    .load(url)
+                    .into(imagePerfil);
+        }
+    }
+
     @Override
     public void onStart() {
         super.onStart();
 
         //Recuperar dados usuario logado
         recuperarDadosUsuarioLogado();
+
+        //Recupera a foto do usuário
+        recuperarFotoUsuario();
     }
 
     @Override
