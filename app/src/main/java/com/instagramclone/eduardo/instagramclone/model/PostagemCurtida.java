@@ -14,32 +14,50 @@ public class PostagemCurtida {
     }
 
     public void salvar(){
+
         DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebase();
 
-        //Objeto usuário
+        //Objeto usuario
         HashMap<String, Object> dadosUsuario = new HashMap<>();
-        dadosUsuario.put("nomeUsuario", usuario.getNome());
-        dadosUsuario.put("caminhoFoto", usuario.getCaminhoFoto());
+        dadosUsuario.put("nomeUsuario", usuario.getNome() );
+        dadosUsuario.put("caminhoFoto", usuario.getCaminhoFoto() );
 
         DatabaseReference pCurtidasRef = firebaseRef
-                .child("postagens-cutidas")
-                .child(feed.getId()) //Id_postagem
-                .child(usuario.getId()); //id_usuário logado
-        pCurtidasRef.setValue(dadosUsuario);
+                .child("postagens-curtidas")
+                .child( feed.getId() )//id_postagem
+                .child( usuario.getId() );//id_usuario_logado
+        pCurtidasRef.setValue( dadosUsuario );
 
-        //Atualizar quantidade de curtidas
+        //atualizar quantidade de curtidas
         atualizarQtd(1);
+
     }
 
     public void atualizarQtd(int valor){
+
         DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebase();
 
         DatabaseReference pCurtidasRef = firebaseRef
-                .child("postagens-cutidas")
-                .child(feed.getId())
+                .child("postagens-curtidas")
+                .child( feed.getId() )//id_postagem
                 .child("qtdCurtidas");
-        setQtdCurtidas(getQtdCurtidas() + valor);
-        pCurtidasRef.setValue(getQtdCurtidas());
+        setQtdCurtidas( getQtdCurtidas() + valor );
+        pCurtidasRef.setValue( getQtdCurtidas() );
+    }
+
+    public void remover(){
+
+        DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebase();
+
+        DatabaseReference pCurtidasRef = firebaseRef
+                .child("postagens-curtidas")
+                .child( feed.getId() )//id_postagem
+                .child( usuario.getId() );//id_usuario_logado
+        pCurtidasRef.removeValue();
+
+        //atualizar quantidade de curtidas
+        atualizarQtd(-1);
+
     }
 
     public Feed getFeed() {

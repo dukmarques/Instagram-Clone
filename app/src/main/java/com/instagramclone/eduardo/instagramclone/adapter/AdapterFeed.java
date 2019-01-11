@@ -62,38 +62,51 @@ public class AdapterFeed extends RecyclerView.Adapter<AdapterFeed.MyViewHolder> 
         //Recuperar dados da postagem curtida
         DatabaseReference curtidasRef = ConfiguracaoFirebase.getFirebase()
                 .child("postagens-curtidas")
-                .child(feed.getId());
+                .child( feed.getId() );
         curtidasRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
                 int qtdCurtidas = 0;
-                if (dataSnapshot.hasChild("qtdCurtidas")){
-                    PostagemCurtida postagemCurtida = dataSnapshot.getValue(PostagemCurtida.class);
+                if( dataSnapshot.hasChild("qtdCurtidas") ){
+                    PostagemCurtida postagemCurtida = dataSnapshot.getValue( PostagemCurtida.class );
                     qtdCurtidas = postagemCurtida.getQtdCurtidas();
                 }
 
-                //Monta objeto postagem curitda
+                //Verifica se já foi clicado
+                if( dataSnapshot.hasChild( usuarioLogado.getId() ) ){
+                    myViewHolder.likeButton.setLiked(true);
+                }else {
+                    myViewHolder.likeButton.setLiked(false);
+                }
+
+                //Monta objeto postagem curtida
                 final PostagemCurtida curtida = new PostagemCurtida();
-                curtida.setFeed(feed);
-                curtida.setUsuario(usuarioLogado);
-                curtida.setQtdCurtidas(qtdCurtidas);
+                curtida.setFeed( feed );
+                curtida.setUsuario( usuarioLogado );
+                curtida.setQtdCurtidas( qtdCurtidas );
 
                 //Adiciona eventos para curtir uma foto
                 myViewHolder.likeButton.setOnLikeListener(new OnLikeListener() {
                     @Override
                     public void liked(LikeButton likeButton) {
                         curtida.salvar();
+                        myViewHolder.qtdCurtidas.setText( curtida.getQtdCurtidas() + " curtidas" );
                     }
 
                     @Override
                     public void unLiked(LikeButton likeButton) {
-
+                        curtida.remover();
+                        myViewHolder.qtdCurtidas.setText( curtida.getQtdCurtidas() + " curtidas" );
                     }
                 });
+
+                myViewHolder.qtdCurtidas.setText( curtida.getQtdCurtidas() + " curtidas" );
+
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
